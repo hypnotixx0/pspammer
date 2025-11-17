@@ -85,6 +85,7 @@
 
     <input type="text" id="msg" placeholder="Message to send">
     <input type="number" id="amount" placeholder="How many?" min="1">
+    <input type="number" id="delay" placeholder="Delay (ms)" min="0" value="300">
 
     <button onclick="sendMessage()">Send</button>
 
@@ -92,14 +93,19 @@
 </div>
 
 <script>
-    const WEBHOOK_URL = "https://discord.com/api/webhooks/1440072392041828352/OxQXts_dUP6zZbQ4tENO0LoQf0tk5PVIDT2yXpOdB31LXNY3r-gGoX5DC53Ai1Po6E8f"; // <--- Replace this
+    const WEBHOOK_URL = "YOUR_WEBHOOK_HERE"; // <--- Replace this
 
     async function sendMessage() {
+        const btn = document.querySelector("button");
+        btn.disabled = true;
+
         const text = document.getElementById("msg").value;
         const times = Number(document.getElementById("amount").value);
+        const delay = Number(document.getElementById("delay").value);
 
-        if (!text || times < 1) {
-            alert("Please enter a message and amount.");
+        if (!text || times < 1 || delay < 0) {
+            alert("Please enter a message, amount, and valid delay.");
+            btn.disabled = false;
             return;
         }
 
@@ -109,10 +115,11 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ content: text })
             });
-            await new Promise(r => setTimeout(r, 300)); // Slight delay
+            await new Promise(r => setTimeout(r, delay));
         }
 
         alert("Done!");
+        btn.disabled = false;
     }
 </script>
 
